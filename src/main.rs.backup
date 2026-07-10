@@ -654,3 +654,5 @@ fn cmd_verify(snapshot_id: Option<u64>) -> Result<()> {
     let mut failed_count = 0;
 
     for row
+    }
+}
