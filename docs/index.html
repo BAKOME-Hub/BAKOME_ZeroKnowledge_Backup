@@ -1,107 +1,74 @@
-```html
-<!doctype html>
-<html lang="en" class="no-js">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Zero‑Knowledge Backup Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-
-:root{
-  --bg-dark:#0d1117;
-  --card-bg:rgba(255,255,255,.07);
-  --accent:#39FF14;          /* neon green */
-  --text:#e2e8f0;
-  --glass-fallback:#111;
-  --card-radius:12px;
-  --spacing:1rem;
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
-html{font-family:system-ui, -apple-system, sans-serif;background:var(--bg-dark);color:var(--text);scroll-behavior:smooth}
-body{padding:var(--spacing)}
-
-/* Global Layout */
-header{margin-bottom:calc(2*var(--spacing));text-align:center}
-header h1{font-size:3rem;font-weight:900;color:var(--accent)}
-header p{margin-top:.5rem;font-size:1.2rem}
-
-.grid{display:grid;gap:var(--spacing);margin-bottom:calc(2*var(--spacing))}
-.stats{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-.features{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
-.card{background:var(--card-bg);border-radius:var(--card-radius);box-shadow:0 4px 30px rgba(0,0,0,.5);overflow:hidden;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:var(--spacing)}
-.card h3{margin-bottom:.4rem;font-size:1.4rem;color:var(--accent)}
-.card p{font-size:.93rem}
-
-/* Stats numbers */
-.stat-num{font-size:2.5rem;font-weight:900;margin:0;color:var(--accent)}
-.stat-label{font-size:.85rem;color:#a0a4a9}
-
-/* Features icons */
-.feature-icon{font-size:3rem;margin-bottom:.5rem;display:inline-block}
-
-/* Code block */
-.code{background:rgba(0,0,0,.4);border-radius:var(--card-radius);padding:1rem;overflow:auto}
-.code pre{margin:0;font-family:ui-monospace, monospace;font-size:.9rem;color:var(--accent)}
-
-@media(max-width:600px){
-  header h1{font-size:2.2rem}
-  .stat-num{font-size:2rem}
-  .stat-label{font-size:.8rem}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 BAKOME ZK Backup — Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+        @keyframes pulse-glow { 0%,100%{box-shadow:0 0 20px rgba(16,185,129,0.2)} 50%{box-shadow:0 0 40px rgba(16,185,129,0.4)} }
+        .particle{position:fixed;border-radius:50%;animation:float 6s infinite ease-in-out;z-index:-1}
+        .glass{background:rgba(17,24,39,0.7);backdrop-filter:blur(10px);border:1px solid rgba(16,185,129,0.2)}
+        .card:hover{animation:pulse-glow 2s infinite}
+    </style>
 </head>
-<body>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+    <canvas id="bg"></canvas>
+    <nav class="glass sticky top-0 z-50 px-6 py-4 border-b border-emerald-900/30">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <span class="text-2xl font-bold text-emerald-400">🔒 BAKOME ZK Backup</span>
+            <div class="space-x-6 text-sm text-gray-400">
+                <a href="#features" class="hover:text-emerald-400">Features</a>
+                <a href="#stats" class="hover:text-emerald-400">Stats</a>
+                <a href="#quickstart" class="hover:text-emerald-400">Quick Start</a>
+                <a href="https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup" class="text-emerald-400 hover:text-emerald-300">GitHub ↗</a>
+            </div>
+        </div>
+    </nav>
 
-<!-- Animated background (gradient) – stays behind content -->
-<div id="bg" style="
-  position:fixed; inset:0; z-index:-1;
-  background:linear-gradient(45deg, #111, #222, #111);
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;"
-></div>
+    <main class="max-w-7xl mx-auto px-6 py-16">
+        <div class="text-center mb-20">
+            <h1 class="text-6xl font-black mb-6 bg-gradient-to-r from-emerald-400 via-green-300 to-emerald-500 bg-clip-text text-transparent">
+                Zero-Knowledge Backup
+            </h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto">Encrypt, store, and recover your data with military-grade security. The server sees nothing. Your keys never leave your device.</p>
+        </div>
 
-<!-- Particles container (over gradient) -->
-<div id="tsparticles" style="position:absolute; inset:0; z-index:-2;"></div>
+        <div id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+            <div class="glass card rounded-2xl p-8 text-center"><div class="text-4xl mb-2">🔐</div><div class="text-3xl font-bold text-emerald-400">AES-256</div><div class="text-sm text-gray-500 mt-1">GCM Encryption</div></div>
+            <div class="glass card rounded-2xl p-8 text-center"><div class="text-4xl mb-2">🔑</div><div class="text-3xl font-bold text-emerald-400">Argon2</div><div class="text-sm text-gray-500 mt-1">Key Derivation</div></div>
+            <div class="glass card rounded-2xl p-8 text-center"><div class="text-4xl mb-2">☁️</div><div class="text-3xl font-bold text-emerald-400">4</div><div class="text-sm text-gray-500 mt-1">Storage Backends</div></div>
+            <div class="glass card rounded-2xl p-8 text-center"><div class="text-4xl mb-2">🦀</div><div class="text-3xl font-bold text-emerald-400">Rust</div><div class="text-sm text-gray-500 mt-1">Memory Safe</div></div>
+        </div>
 
-<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.9.3/tsparticles.min.js"></script>
-<script>
-tsParticles.load("tsparticles",{
-  background:{color:{value:"transparent"}},
-  fpsLimit:60,
-  interactivity:{
-    detectsOn:"canvas",
-    events:{
-      onHover:{enable:true,mode:"repulse"},
-      resize:true
-    },
-    modes:{repulse:{distance:100, duration:0.4}}
-  },
-  particles:{
-    color:{value:"#39FF14"},
-    links:{color:"#39FF14",distance:150,enable:true,opacity:0.3},
-    move:{direction:"none",enable:true,random:true,straight:false,warp:true},
-    number:{density:{enable:true,value_area:800},limit:0,value:80},
-    opacity:{animation:{enable:true,minimumValue:0.1, speed:1},value:.5},
-    shape:{type:"circle"},
-    size:{random:true, value:5}
-  },
-  detectRetina:true
-});
-</script>
+        <div id="features" class="grid md:grid-cols-3 gap-6 mb-20">
+            <div class="glass rounded-2xl p-8"><h3 class="text-xl font-semibold text-emerald-400 mb-4">🔐 Client-Side Encryption</h3><p class="text-gray-400">Data encrypted BEFORE upload. Server receives only random noise. AES-256-GCM authenticated encryption.</p></div>
+            <div class="glass rounded-2xl p-8"><h3 class="text-xl font-semibold text-emerald-400 mb-4">🔑 Zero-Knowledge</h3><p class="text-gray-400">Encryption keys derived with Argon2id. Keys NEVER touch the server. Complete privacy guaranteed.</p></div>
+            <div class="glass rounded-2xl p-8"><h3 class="text-xl font-semibold text-emerald-400 mb-4">☁️ Multi-Backend</h3><p class="text-gray-400">WebDAV, Amazon S3, IPFS, or local disk. Switch between backends anytime.</p></div>
+        </div>
 
-<header>
-  <h1>Zero‑Knowledge Backup</h1>
-  <p>Store, encrypt, and recover data with no knowledge of your secrets.</p>
-</header>
+        <div id="quickstart" class="glass rounded-2xl p-8 mb-10">
+            <h2 class="text-2xl font-bold text-emerald-400 mb-6">⚡ Quick Start</h2>
+            <pre class="bg-gray-950 rounded-xl p-6 text-sm text-gray-300 overflow-x-auto">
+<span class="text-emerald-400">$</span> git clone https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup.git
+<span class="text-emerald-400">$</span> cd BAKOME_ZeroKnowledge_Backup
+<span class="text-emerald-400">$</span> cargo build --release
+<span class="text-emerald-400">$</span> ./bakome_zk_backup init webdav://your-server.com/backup
+<span class="text-emerald-400">$</span> ./bakome_zk_backup backup ~/Documents</pre>
+        </div>
+    </main>
 
-<div class="grid stats">
-  <!-- Stats Cards -->
-  <div class="card">
-    <div class="stat-num">1.2 TB</div>
-    <div class="stat-label">Encrypted Storage</div>
-  </div>
-  <div class="card">
-    <div class="stat-num">256 bit</div>
-    <div class="stat-label">Encryption Strength</div>
-  </div
+    <footer class="glass border-t border-emerald-900/30 py-8 text-center text-gray-500 text-sm">
+        <p>BAKOME ZK Backup v1.0 — <a href="https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup" class="text-emerald-400 hover:underline">GitHub</a> | MIT License</p>
+    </footer>
+
+    <script>
+        const c=document.getElementById('bg'),ctx=c.getContext('2d');
+        c.width=window.innerWidth;c.height=window.innerHeight;
+        const p=Array.from({length:40},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+1,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));
+        function anim(){ctx.clearRect(0,0,c.width,c.height);p.forEach(a=>{a.x+=a.vx;a.y+=a.vy;if(a.x<0)a.x=c.width;if(a.x>c.width)a.x=0;if(a.y<0)a.y=c.height;if(a.y>c.height)a.y=0;ctx.beginPath();ctx.arc(a.x,a.y,a.r,0,Math.PI*2);ctx.fillStyle='rgba(16,185,129,0.15)';ctx.fill()});requestAnimationFrame(anim)}
+        anim();window.onresize=()=>{c.width=window.innerWidth;c.height=window.innerHeight}
+    </script>
+</body>
+</html>
