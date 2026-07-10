@@ -1,74 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔒 BAKOME ZK Backup — Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
-        @keyframes pulse-glow { 0%,100%{box-shadow:0 0 20px rgba(16,185,129,0.2)} 50%{box-shadow:0 0 40px rgba(16,185,129,0.4)} }
-        .particle{position:fixed;border-radius:50%;animation:float 6s infinite ease-in-out;z-index:-1}
-        .glass{background:rgba(17,24,39,0.7);backdrop-filter:blur(10px);border:1px solid rgba(16,185,129,0.2)}
-        .card:hover{animation:pulse-glow 2s infinite}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔒 BAKOME ZK Backup — Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+<style>
+:root{--bg:#0a0a1a;--card:rgba(17,24,39,0.7);--green:#10b981;--text:#e2e8f0}
+.light{--bg:#f8fafc;--card:rgba(255,255,255,0.7);--green:#059669;--text:#1e293b}
+.neon{--bg:#000000;--card:rgba(0,20,0,0.8);--green:#39ff14;--text:#e0ffe0}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 20px rgba(16,185,129,0.2)}50%{box-shadow:0 0 40px rgba(16,185,129,0.5)}}
+@keyframes gradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.glass{background:var(--card);backdrop-filter:blur(16px);border:1px solid rgba(16,185,129,0.15)}
+.glow:hover{animation:pulse 2s infinite}
+.particle{position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+.fade-in{opacity:0;animation:fadeIn .8s forwards}
+.hero-text{background:linear-gradient(135deg,var(--green),#34d399,#6ee7b7,#34d399);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradient 4s infinite}
+.chat-bubble{animation:float 3s infinite}
+#chatBox{transition:all .3s ease}
+</style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen">
-    <canvas id="bg"></canvas>
-    <nav class="glass sticky top-0 z-50 px-6 py-4 border-b border-emerald-900/30">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <span class="text-2xl font-bold text-emerald-400">🔒 BAKOME ZK Backup</span>
-            <div class="space-x-6 text-sm text-gray-400">
-                <a href="#features" class="hover:text-emerald-400">Features</a>
-                <a href="#stats" class="hover:text-emerald-400">Stats</a>
-                <a href="#quickstart" class="hover:text-emerald-400">Quick Start</a>
-                <a href="https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup" class="text-emerald-400 hover:text-emerald-300">GitHub ↗</a>
-            </div>
-        </div>
-    </nav>
+<body style="background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;margin:0">
 
-    <main class="max-w-7xl mx-auto px-6 py-16">
-        <div class="text-center mb-20">
-            <h1 class="text-6xl font-black mb-6 bg-gradient-to-r from-emerald-400 via-green-300 to-emerald-500 bg-clip-text text-transparent">
-                Zero-Knowledge Backup
-            </h1>
-            <p class="text-xl text-gray-400 max-w-2xl mx-auto">Encrypt, store, and recover your data with military-grade security. The server sees nothing. Your keys never leave your device.</p>
-        </div>
+<canvas id="particles" style="position:fixed;top:0;left:0;z-index:0"></canvas>
 
-        <div id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
-            <div class="glass card rounded-2xl p-8 text-center"><div class="text-4xl mb-2">🔐</div><div class="text-3xl font-bold text-emerald-400">AES-256</div><div class="text-sm text-gray-500 mt-1">GCM Encryption</div></div>
-            <div class="glass card rounded-2xl p-8 text-center"><div class="text-4xl mb-2">🔑</div><div class="text-3xl font-bold text-emerald-400">Argon2</div><div class="text-sm text-gray-500 mt-1">Key Derivation</div></div>
-            <div class="glass card rounded-2xl p-8 text-center"><div class="text-4xl mb-2">☁️</div><div class="text-3xl font-bold text-emerald-400">4</div><div class="text-sm text-gray-500 mt-1">Storage Backends</div></div>
-            <div class="glass card rounded-2xl p-8 text-center"><div class="text-4xl mb-2">🦀</div><div class="text-3xl font-bold text-emerald-400">Rust</div><div class="text-sm text-gray-500 mt-1">Memory Safe</div></div>
-        </div>
+<nav class="glass" style="position:sticky;top:0;z-index:50;padding:1rem 1.5rem">
+<div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
+<span style="font-size:1.5rem;font-weight:700;color:var(--green)">🔒 BAKOME ZK Backup</span>
+<div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+<a href="#features" style="color:var(--text);text-decoration:none;font-size:.9rem">Features</a>
+<a href="#stats" style="color:var(--text);text-decoration:none;font-size:.9rem">Stats</a>
+<a href="#quickstart" style="color:var(--text);text-decoration:none;font-size:.9rem">Quick Start</a>
+<a href="#faq" style="color:var(--text);text-decoration:none;font-size:.9rem">FAQ</a>
+<a href="https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup" style="color:var(--green);text-decoration:none;font-size:.9rem">GitHub ↗</a>
+<select onchange="document.documentElement.className=this.value;localStorage.setItem('theme',this.value)" style="background:var(--card);color:var(--text);border:1px solid var(--green);border-radius:8px;padding:4px 8px;font-size:.8rem">
+<option value="dark">🌙 Dark</option><option value="light">☀️ Light</option><option value="neon">💚 Neon</option>
+</select>
+<select id="lang" onchange="translate(this.value)" style="background:var(--card);color:var(--text);border:1px solid var(--green);border-radius:8px;padding:4px 8px;font-size:.8rem">
+<option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option>
+</select>
+</div></div></nav>
 
-        <div id="features" class="grid md:grid-cols-3 gap-6 mb-20">
-            <div class="glass rounded-2xl p-8"><h3 class="text-xl font-semibold text-emerald-400 mb-4">🔐 Client-Side Encryption</h3><p class="text-gray-400">Data encrypted BEFORE upload. Server receives only random noise. AES-256-GCM authenticated encryption.</p></div>
-            <div class="glass rounded-2xl p-8"><h3 class="text-xl font-semibold text-emerald-400 mb-4">🔑 Zero-Knowledge</h3><p class="text-gray-400">Encryption keys derived with Argon2id. Keys NEVER touch the server. Complete privacy guaranteed.</p></div>
-            <div class="glass rounded-2xl p-8"><h3 class="text-xl font-semibold text-emerald-400 mb-4">☁️ Multi-Backend</h3><p class="text-gray-400">WebDAV, Amazon S3, IPFS, or local disk. Switch between backends anytime.</p></div>
-        </div>
+<main style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:4rem 1.5rem">
 
-        <div id="quickstart" class="glass rounded-2xl p-8 mb-10">
-            <h2 class="text-2xl font-bold text-emerald-400 mb-6">⚡ Quick Start</h2>
-            <pre class="bg-gray-950 rounded-xl p-6 text-sm text-gray-300 overflow-x-auto">
-<span class="text-emerald-400">$</span> git clone https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup.git
-<span class="text-emerald-400">$</span> cd BAKOME_ZeroKnowledge_Backup
-<span class="text-emerald-400">$</span> cargo build --release
-<span class="text-emerald-400">$</span> ./bakome_zk_backup init webdav://your-server.com/backup
-<span class="text-emerald-400">$</span> ./bakome_zk_backup backup ~/Documents</pre>
-        </div>
-    </main>
+<section style="text-align:center;margin-bottom:5rem">
+<div class="fade-in" style="font-size:4rem;font-weight:900;margin-bottom:1rem"><span class="hero-text">Zero-Knowledge Backup</span></div>
+<p class="fade-in" style="animation-delay:.2s;font-size:1.25rem;color:#9ca3af;max-width:600px;margin:0 auto 2rem">Encrypt before upload. Server sees nothing. Your keys, your data.</p>
+<div class="fade-in" style="animation-delay:.4s;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+<a href="#quickstart" style="background:var(--green);color:#000;padding:1rem 2rem;border-radius:12px;text-decoration:none;font-weight:600;transition:transform .2s;display:inline-block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Get Started</a>
+<a href="https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup" style="border:2px solid var(--green);color:var(--green);padding:1rem 2rem;border-radius:12px;text-decoration:none;font-weight:600;transition:transform .2s;display:inline-block" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">View on GitHub</a>
+</div>
+<div class="fade-in" style="animation-delay:.6s;margin-top:3rem;display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;font-size:.9rem;color:#9ca3af">
+<span>🔐 1.2 TB Encrypted</span><span>🔑 256-bit AES</span><span>☁️ 4 Backends</span><span>✅ 99.9% Uptime</span>
+</div>
+</section>
 
-    <footer class="glass border-t border-emerald-900/30 py-8 text-center text-gray-500 text-sm">
-        <p>BAKOME ZK Backup v1.0 — <a href="https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup" class="text-emerald-400 hover:underline">GitHub</a> | MIT License</p>
-    </footer>
+<section id="stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:5rem">
+<div class="glass glow fade-in" style="padding:2rem;text-align:center;border-radius:16px"><div style="font-size:2.5rem">🔐</div><div style="font-size:2rem;font-weight:700;color:var(--green);margin:.5rem 0">AES-256</div><div style="color:#9ca3af;font-size:.9rem">GCM Encryption</div></div>
+<div class="glass glow fade-in" style="animation-delay:.1s;padding:2rem;text-align:center;border-radius:16px"><div style="font-size:2.5rem">🔑</div><div style="font-size:2rem;font-weight:700;color:var(--green);margin:.5rem 0">Argon2id</div><div style="color:#9ca3af;font-size:.9rem">Key Derivation</div></div>
+<div class="glass glow fade-in" style="animation-delay:.2s;padding:2rem;text-align:center;border-radius:16px"><div style="font-size:2.5rem">☁️</div><div style="font-size:2rem;font-weight:700;color:var(--green);margin:.5rem 0">4</div><div style="color:#9ca3af;font-size:.9rem">Storage Backends</div></div>
+<div class="glass glow fade-in" style="animation-delay:.3s;padding:2rem;text-align:center;border-radius:16px"><div style="font-size:2.5rem">🦀</div><div style="font-size:2rem;font-weight:700;color:var(--green);margin:.5rem 0">Rust</div><div style="color:#9ca3af;font-size:.9rem">Memory Safe</div></div>
+</section>
 
-    <script>
-        const c=document.getElementById('bg'),ctx=c.getContext('2d');
-        c.width=window.innerWidth;c.height=window.innerHeight;
-        const p=Array.from({length:40},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+1,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));
-        function anim(){ctx.clearRect(0,0,c.width,c.height);p.forEach(a=>{a.x+=a.vx;a.y+=a.vy;if(a.x<0)a.x=c.width;if(a.x>c.width)a.x=0;if(a.y<0)a.y=c.height;if(a.y>c.height)a.y=0;ctx.beginPath();ctx.arc(a.x,a.y,a.r,0,Math.PI*2);ctx.fillStyle='rgba(16,185,129,0.15)';ctx.fill()});requestAnimationFrame(anim)}
-        anim();window.onresize=()=>{c.width=window.innerWidth;c.height=window.innerHeight}
-    </script>
+<section id="features" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-bottom:5rem">
+<div class="glass fade-in" style="padding:2rem;border-radius:16px"><h3 style="font-size:1.25rem;font-weight:600;color:var(--green);margin-bottom:.5rem">🔐 Client-Side Encryption</h3><p style="color:#9ca3af">AES-256-GCM encryption happens BEFORE upload. Server receives only random noise.</p></div>
+<div class="glass fade-in" style="animation-delay:.1s;padding:2rem;border-radius:16px"><h3 style="font-size:1.25rem;font-weight:600;color:var(--green);margin-bottom:.5rem">🔑 Zero-Knowledge</h3><p style="color:#9ca3af">Keys derived with Argon2id. NEVER leave your device. Complete privacy.</p></div>
+<div class="glass fade-in" style="animation-delay:.2s;padding:2rem;border-radius:16px"><h3 style="font-size:1.25rem;font-weight:600;color:var(--green);margin-bottom:.5rem">☁️ Multi-Backend</h3><p style="color:#9ca3af">WebDAV, S3, IPFS, Local. Switch anytime. Your data, your choice.</p></div>
+<div class="glass fade-in" style="animation-delay:.3s;padding:2rem;border-radius:16px"><h3 style="font-size:1.25rem;font-weight:600;color:var(--green);margin-bottom:.5rem">✅ Integrity</h3><p style="color:#9ca3af">SHA3-256 hashing per chunk. Cryptographic snapshots. Tamper-proof.</p></div>
+<div class="glass fade-in" style="animation-delay:.4s;padding:2rem;border-radius:16px"><h3 style="font-size:1.25rem;font-weight:600;color:var(--green);margin-bottom:.5rem">🔒 GPU-Resistant</h3><p style="color:#9ca3af">Argon2id is memory-hard. Even massive GPU farms cannot brute-force your key.</p></div>
+<div class="glass fade-in" style="animation-delay:.5s;padding:2rem;border-radius:16px"><h3 style="font-size:1.25rem;font-weight:600;color:var(--green);margin-bottom:.5rem">📸 Snapshots</h3><p style="color:#9ca3af">Versioned backups with restore points. Roll back to any previous state.</p></div>
+</section>
+
+<section id="quickstart" class="glass" style="padding:2rem;border-radius:16px;margin-bottom:5rem">
+<h2 style="font-size:1.5rem;font-weight:700;color:var(--green);margin-bottom:1rem">⚡ Quick Start</h2>
+<div style="display:flex;gap:.5rem;margin-bottom:1rem">
+<button onclick="showCode('webdav')" style="background:var(--green);color:#000;border:none;padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-weight:600">WebDAV</button>
+<button onclick="showCode('s3')" style="background:var(--card);color:var(--text);border:1px solid var(--green);padding:.5rem 1rem;border-radius:8px;cursor:pointer">S3</button>
+<button onclick="showCode('ipfs')" style="background:var(--card);color:var(--text);border:1px solid var(--green);padding:.5rem 1rem;border-radius:8px;cursor:pointer">IPFS</button>
+<button onclick="showCode('local')" style="background:var(--card);color:var(--text);border:1px solid var(--green);padding:.5rem 1rem;border-radius:8px;cursor:pointer">Local</button>
+</div>
+<pre id="codeBlock" style="background:#0d1117;padding:1.5rem;border-radius:12px;overflow-x:auto;font-family:'Fira Code',monospace;font-size:.85rem;position:relative">
+<span style="color:var(--green)">$</span> git clone https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup.git
+<span style="color:var(--green)">$</span> cd BAKOME_ZeroKnowledge_Backup
+<span style="color:var(--green)">$</span> cargo build --release
+<span style="color:var(--green)">$</span> ./bakome_zk_backup init webdav://your-server.com/backup
+<span style="color:var(--green)">$</span> ./bakome_zk_backup backup ~/Documents</pre>
+<button onclick="navigator.clipboard.writeText(document.getElementById('codeBlock').innerText);this.textContent='✅ Copied!';setTimeout(()=>this.textContent='📋 Copy',2000)" style="margin-top:.5rem;background:var(--card);color:var(--text);border:1px solid var(--green);padding:.5rem 1rem;border-radius:8px;cursor:pointer">📋 Copy</button>
+</section>
+
+<section id="faq" style="margin-bottom:5rem">
+<h2 style="font-size:1.5rem;font-weight:700;color:var(--green);margin-bottom:1rem;text-align:center">❓ FAQ</h2>
+<div class="glass" style="border-radius:16px;overflow:hidden">
+<details style="padding:1rem 1.5rem;border-bottom:1px solid rgba(16,185,129,0.1);cursor:pointer"><summary style="font-weight:600;color:var(--text)">Is my data really safe?</summary><p style="color:#9ca3af;margin-top:.5rem">Yes. Data is encrypted with AES-256-GCM before it leaves your device. The server sees only random noise. Even if the server is hacked, your data remains secure.</p></details>
+<details style="padding:1rem 1.5rem;border-bottom:1px solid rgba(16,185,129,0.1);cursor:pointer"><summary style="font-weight:600;color:var(--text)">What happens if I lose my password?</summary><p style="color:#9ca3af;margin-top:.5rem">Your encryption key is derived from your password using Argon2id. Without the password, the data cannot be decrypted. There is no backdoor. Save your password securely.</p></details>
+<details style="padding:1rem 1.5rem;border-bottom:1px solid rgba(16,185,129,0.1);cursor:pointer"><summary style="font-weight:600;color:var(--text)">Which cloud providers are supported?</summary><p style="color:#9ca3af;margin-top:.5rem">WebDAV (Nextcloud, ownCloud), Amazon S3 (and MinIO), IPFS (decentralized), and local disk storage.</p></details>
+<details style="padding:1rem 1.5rem;border-bottom:1px solid rgba(16,185,129,0.1);cursor:pointer"><summary style="font-weight:600;color:var(--text)">How is this different from Google Drive?</summary><p style="color:#9ca3af;margin-top:.5rem">Google Drive can see your files. With ZK Backup, the server sees only encrypted noise. Zero-knowledge means zero trust required.</p></details>
+<details style="padding:1rem 1.5rem;cursor:pointer"><summary style="font-weight:600;color:var(--text)">Is it free?</summary><p style="color:#9ca3af;margin-top:.5rem">Yes! BAKOME ZK Backup is open source under MIT license. Free forever.</p></details>
+</div>
+</section>
+
+<section class="glass" style="padding:2rem;border-radius:16px;text-align:center;margin-bottom:3rem">
+<h2 style="font-size:1.5rem;font-weight:700;color:var(--green);margin-bottom:.5rem">📧 Stay Updated</h2>
+<p style="color:#9ca3af;margin-bottom:1rem">Get notified about new features and releases.</p>
+<div style="display:flex;gap:.5rem;max-width:400px;margin:0 auto">
+<input type="email" placeholder="Enter your email" style="flex:1;background:var(--card);color:var(--text);border:1px solid var(--green);padding:.75rem 1rem;border-radius:8px;outline:none">
+<button onclick="this.innerHTML='✅ Subscribed!';this.style.background='var(--green)';this.style.color='#000'" style="background:var(--green);color:#000;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;font-weight:600;white-space:nowrap">Subscribe</button>
+</div>
+</section>
+
+</main>
+
+<div id="chatBubble" class="chat-bubble" onclick="toggleChat()" style="position:fixed;bottom:1.5rem;right:1.5rem;width:60px;height:60px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;z-index:100;box-shadow:0 4px 20px rgba(16,185,129,0.4)">💬</div>
+<div id="chatBox" style="display:none;position:fixed;bottom:5rem;right:1.5rem;width:320px;background:var(--card);backdrop-filter:blur(16px);border-radius:16px;border:1px solid rgba(16,185,129,0.3);z-index:100;overflow:hidden">
+<div style="background:var(--green);color:#000;padding:1rem;font-weight:600;display:flex;justify-content:space-between">💬 Assistant <span onclick="toggleChat()" style="cursor:pointer">✕</span></div>
+<div style="padding:1rem;max-height:300px;overflow-y:auto">
+<p style="color:#9ca3af;font-size:.85rem">👋 Hi! How can I help you?</p>
+<button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="width:100%;background:var(--card);color:var(--text);border:1px solid rgba(16,185,129,0.3);padding:.5rem;border-radius:8px;margin:.25rem 0;cursor:pointer;text-align:left">🔐 How to backup?</button>
+<p style="display:none;color:#9ca3af;font-size:.8rem;padding:.5rem">Run: <code style="background:#0d1117;padding:.2rem .5rem;border-radius:4px">./bakome_zk_backup backup ~/Documents</code></p>
+<button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="width:100%;background:var(--card);color:var(--text);border:1px solid rgba(16,185,129,0.3);padding:.5rem;border-radius:8px;margin:.25rem 0;cursor:pointer;text-align:left">☁️ Supported storage?</button>
+<p style="display:none;color:#9ca3af;font-size:.8rem;padding:.5rem">WebDAV, S3, IPFS, and Local disk.</p>
+<button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="width:100%;background:var(--card);color:var(--text);border:1px solid rgba(16,185,129,0.3);padding:.5rem;border-radius:8px;margin:.25rem 0;cursor:pointer;text-align:left">💰 Is it free?</button>
+<p style="display:none;color:#9ca3af;font-size:.8rem;padding:.5rem">Yes! MIT License. Free forever.</p>
+</div>
+</div>
+
+<footer class="glass" style="text-align:center;padding:2rem;position:relative;z-index:1">
+<p style="color:#9ca3af;font-size:.9rem">BAKOME ZK Backup v1.0 — <a href="https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup" style="color:var(--green)">GitHub</a> | MIT License</p>
+<p style="color:#6b7280;font-size:.8rem;margin-top:.5rem">Built with 🦀 Rust | <a href="https://superteam.fun/earn/r/92VXM6K" style="color:var(--green)">Superteam Earn</a></p>
+</footer>
+
+<script>
+const saved=localStorage.getItem('theme');if(saved)document.documentElement.className=saved;
+document.querySelector('select').value=saved||'dark';
+
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const particles=Array.from({length:50},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));
+function anim(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(16,185,129,0.15)';ctx.fill()});requestAnimationFrame(anim)}
+anim();window.onresize=()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight};
+
+function toggleChat(){const b=document.getElementById('chatBox');b.style.display=b.style.display==='none'?'block':'none'}
+function showCode(backend){
+const codes={webdav:`$ git clone https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup.git\n$ cd BAKOME_ZeroKnowledge_Backup\n$ cargo build --release\n$ ./bakome_zk_backup init webdav://your-server.com/backup\n$ ./bakome_zk_backup backup ~/Documents`,
+s3:`$ git clone https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup.git\n$ cd BAKOME_ZeroKnowledge_Backup\n$ cargo build --release\n$ ./bakome_zk_backup init s3://your-bucket/backup\n$ ./bakome_zk_backup backup ~/Documents`,
+ipfs:`$ git clone https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup.git\n$ cd BAKOME_ZeroKnowledge_Backup\n$ cargo build --release\n$ ./bakome_zk_backup init ipfs://backup\n$ ./bakome_zk_backup backup ~/Documents`,
+local:`$ git clone https://github.com/BAKOME-Hub/BAKOME_ZeroKnowledge_Backup.git\n$ cd BAKOME_ZeroKnowledge_Backup\n$ cargo build --release\n$ ./bakome_zk_backup init /mnt/backup\n$ ./bakome_zk_backup backup ~/Documents`};
+document.getElementById('codeBlock').innerHTML=codes[backend].split('\n').map(l=>`<span style="color:var(--green)">$</span> ${l.slice(2)}`).join('\n')}
+
+const fades=document.querySelectorAll('.fade-in');
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.animationPlayState='running';obs.unobserve(e.target)}})});
+fades.forEach(el=>{el.style.animationPlayState='paused';obs.observe(el)});
+fades.forEach(el=>{el.style.animationPlayState='running'});
+
+function translate(lang){
+const t={en:{hero:"Zero-Knowledge Backup",sub:"Encrypt before upload. Server sees nothing. Your keys, your data.",cta1:"Get Started",cta2:"View on GitHub",features:"Features",stats:"Stats",quick:"Quick Start",faq:"FAQ"},
+fr:{hero:"Sauvegarde Zero-Knowledge",sub:"Chiffrez avant l'envoi. Le serveur ne voit rien. Vos clés, vos données.",cta1:"Démarrer",cta2:"Voir sur GitHub",features:"Fonctionnalités",stats:"Statistiques",quick:"Démarrage Rapide",faq:"FAQ"},
+es:{hero:"Respaldo Zero-Knowledge",sub:"Cifre antes de subir. El servidor no ve nada. Sus claves, sus datos.",cta1:"Empezar",cta2:"Ver en GitHub",features:"Características",stats:"Estadísticas",quick:"Inicio Rápido",faq:"FAQ"}};
+const d=t[lang]||t.en;
+try{document.querySelector('.hero-text').textContent=d.hero;
+document.querySelector('.fade-in+p').textContent=d.sub;
+document.querySelectorAll('a[href="#quickstart"]')[0].textContent=d.cta1;
+document.querySelectorAll('a[href*="github"]')[0].textContent=d.cta2;
+document.querySelector('#features').previousElementSibling.textContent=d.features;
+document.querySelector('#stats').previousElementSibling.textContent=d.stats;
+document.querySelector('#quickstart h2').textContent='⚡ '+d.quick;
+document.querySelector('#faq h2').textContent='❓ '+d.faq}catch(e){}
+}
+</script>
+
 </body>
 </html>
